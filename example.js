@@ -6,18 +6,19 @@ const customTree = {
     {
       name: 'branchA',
       children: [
-        { name: 'branchC' },
+        { name: 'branchC'},
+        { name: 'branchC', children:[{name:'branceD'}] },
+        { name: 'branchC', children:[{name:'branceD'}, {name:'branceE'}] },
       ],
     },
     { name: 'branchB' },
   ],
 };
 
-const result = printTree(
+printTree(
   customTree, {
     printNode: node => node.name,
     getChildren: node => node.children
   }
 );
 
-console.log(result);

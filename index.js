@@ -21,10 +21,10 @@ function printTree<T>(
     const children = options.getChildren(tree) || [];
 
     let o = '';
-    let branchHead = '';
+    let branchHead = '└─ ';
 
     if (!isGraphHead) {
-      branchHead = children && children.length !== 0 ? '┬ ' : '─ ';
+      branchHead = '─ ';
     }
 
     const toPrint = options.printNode(tree, `${branch}${branchHead}`);
@@ -37,14 +37,14 @@ function printTree<T>(
 
     if (!isGraphHead) {
       const isChildOfLastBranch = branch.slice(-2) === '└─';
-      baseBranch = branch.slice(0, -2) + (isChildOfLastBranch ? '  ' : '| ');
+      baseBranch = branch.slice(0, -2) + (isChildOfLastBranch ? '  ' : '│ ');
     }
 
-    const nextBranch = baseBranch + '├─';
-    const lastBranch = baseBranch + '└─';
+    const nextBranch = baseBranch + '  ├─';
+    const lastBranch = baseBranch + '  └─';
 
     children.forEach((child, index) => {
-      o += '\n'+getBranch(child, children.length - 1 === index ? lastBranch : nextBranch);
+      o += '\n   '+getBranch(child, children.length - 1 === index ? lastBranch : nextBranch);
     });
 
     return o;
