@@ -5,25 +5,32 @@
 type PrintNode<T> = (node: T, branch: string) => ?string;
 type GetChildren<T> = (node: T) => Array<T>;
 
+const defaults = {
+  printNode: node => node.name,
+  getChildren: node => node.children,
+  print: true
+ }
+
 function printTree<T>(
   initialTree: T,
-  printNode: PrintNode<T>,
-  getChildren: GetChildren<T>,
+  options: Object<T>,
 ) {
-  function printBranch(tree, branch) {
+  function getBranch(tree, branch) {
+    options = Object.assign({}, defaults, options);
     const isGraphHead = branch.length === 0;
-    const children = getChildren(tree) || [];
+    const children = options.getChildren(tree) || [];
 
+    let o = '';
     let branchHead = '';
 
     if (!isGraphHead) {
       branchHead = children && children.length !== 0 ? '┬ ' : '─ ';
     }
 
-    const toPrint = printNode(tree, `${branch}${branchHead}`);
+    const toPrint = options.printNode(tree, `${branch}${branchHead}`);
 
     if (typeof toPrint === 'string') {
-      console.log(`${branch}${branchHead}${toPrint}`);
+      o += `${branch}${branchHead}${toPrint}`;
     }
 
     let baseBranch = branch;
@@ -37,11 +44,17 @@ function printTree<T>(
     const lastBranch = baseBranch + '└─';
 
     children.forEach((child, index) => {
-      printBranch(child, children.length - 1 === index ? lastBranch : nextBranch);
+      o += '\n'+getBranch(child, children.length - 1 === index ? lastBranch : nextBranch);
     });
+
+    return o;
   }
 
-  printBranch(initialTree, '');
+  const result = getBranch(initialTree, '');
+  if (options.print) {
+    console.log(result);
+  }
+  return result;
 }
 
 module.exports = printTree;
